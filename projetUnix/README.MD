@@ -32,3 +32,11 @@ Ce script shell surveille les processus système pour détecter des anomalies te
 - **Exécution du script**
    ```bash
    bash ./process_monitor.sh &
+
+## Paramètres personnalisables
+- **Seuil d'utilisation CPU**
+   ```bash
+   CPU_THRESHOLD= Votre choix
+- **Utilisateurs autorisés**
+   ```bash
+   AUTHORIZED_USERS=("utilisateurs authorisés")

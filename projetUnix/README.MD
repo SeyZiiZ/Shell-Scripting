@@ -18,3 +18,17 @@ Ce script shell surveille les processus système pour détecter des anomalies te
    Installez les dépendances avec la commande suivante si nécessaire :
    ```bash
    sudo apt-get install xterm bc
+
+## Installation 
+1. **Créer les fichiers nécessaires :
+   - Fichier de log : $HOME/process_monitor.log
+   - Fichier de suspects : $HOME/process_suspects.log
+   - Rapport quotidien : $HOME/daily_report.log
+2. **Donner les permissions d'exécution au script
+   ```bash 
+   chmod +x surveillance.sh
+
+## Utilisation 
+- **Exécution du script
+   ```bash
+   bash ./process_monitor.sh &

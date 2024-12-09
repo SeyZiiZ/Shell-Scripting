@@ -78,7 +78,7 @@ monitor_processes() {
             command=$(echo "$process" | awk '{print $11}')
 
             # Vérification si l'utilisateur est non autorisé
-            if [[ ! " ${AUTHORIZED_USERS[@]} " =~ " ${user} " ]]; then
+            if [[ ! " ${AUTHORIZED_USERS[@]} " =~ " ${user} " ]] && (( $(echo "$cpu > 3.0" | bc -l) )); then
                 anomaly="Utilisateur non autorisé"
                 echo "ALERTE : $anomaly (Utilisateur: $user, PID: $pid, Commande: $command)" | tee -a "$LOG_FILE"
                 collect_process_info "$pid"

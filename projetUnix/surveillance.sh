@@ -69,22 +69,25 @@ monitor_processes() {
         # Liste des processus triés par utilisation CPU
         ps aux --sort=-%cpu | awk -v threshold=$CPU_THRESHOLD '
         NR>1 {
-            if ($3 > threshold) {
-                print $0
-            }
+            print $0
         }' | while read -r process; do
+            # Extraction des informations du processus
             user=$(echo "$process" | awk '{print $1}')
             pid=$(echo "$process" | awk '{print $2}')
             cpu=$(echo "$process" | awk '{print $3}')
             command=$(echo "$process" | awk '{print $11}')
 
+            # Vérification si l'utilisateur est non autorisé
             if [[ ! " ${AUTHORIZED_USERS[@]} " =~ " ${user} " ]]; then
                 anomaly="Utilisateur non autorisé"
-                echo "ALERTE : $anomaly" | tee -a "$LOG_FILE"
+                echo "ALERTE : $anomaly (Utilisateur: $user, PID: $pid, Commande: $command)" | tee -a "$LOG_FILE"
                 notify_action "$pid" "$anomaly" "$user"
-            elif (( $(echo "$cpu > $CPU_THRESHOLD" | bc -l) )); then
+            fi
+
+            # Vérification de l'utilisation CPU élevée
+            if (( $(echo "$cpu > $CPU_THRESHOLD" | bc -l) )); then
                 anomaly="Utilisation CPU élevée ($cpu%)"
-                echo "ALERTE : $anomaly" | tee -a "$LOG_FILE"
+                echo "ALERTE : $anomaly (Utilisateur: $user, PID: $pid, Commande: $command)" | tee -a "$LOG_FILE"
                 notify_action "$pid" "$anomaly" "$user"
             fi
         done
@@ -100,6 +103,7 @@ monitor_processes() {
             notify_action "$pid" "$anomaly" "N/A"
         done
 
+        # Pause entre les cycles de surveillance
         sleep 10
     done
 }

@@ -8,7 +8,63 @@ LOCK_FILE="./process_monitor.lock"
 
 # Seuils d'anomalies
 CPU_THRESHOLD=80
-AUTHORIZED_USERS=("root")
+AUTHORIZED_USERS=(
+    "root"
+    "systemd"
+    "systemd+"
+    "systemd-journald"
+    "systemd-udevd"
+    "systemd-timesyncd"
+    "systemd-resolved"
+    "systemd-logind"
+    "rsyslogd"
+    "cron"
+    "dbus-daemon"
+    "polkitd"
+    "NetworkManager"
+    "wpa_supplicant"
+    "bluetoothd"
+    "pulseaudio"
+    "pipewire"
+    "pipewire-media-session"
+    "sshd"
+    "dockerd"
+    "containerd"
+    "snapd"
+    "unattended-upgr"
+    "update-notifier"
+    "fail2ban-server"
+    "ufw"
+    "accounts-daemon"
+    "colord"
+    "rtkit-daemon"
+    "packagekitd"
+    "thermald"
+    "irqbalance"
+    "message+"
+    "ModemManager"
+    "udisksd"
+    "cupsd"
+    "gdm3"
+    "gnome-shell"
+    "Xorg"
+    "gnome-session"
+    "gnome-display-config"
+    "agetty"
+    "login"
+    "sudo"
+    "at-spi2-registryd"
+    "dconf-service"
+    "gvfsd"
+    "gnome-keyring-daemon"
+    "evolution-source-registry"
+    "tracker-miner-fs"
+    "ubuntu-advantage-tool"
+    "ubuntu-drivers"
+    "update-manager"
+    "seyy"
+    "syslog"
+)
 
 # Fonction pour notifier l'utilisateur
 notify_action() {
@@ -78,7 +134,7 @@ monitor_processes() {
             command=$(echo "$process" | awk '{print $11}')
 
             # Vérification si l'utilisateur est non autorisé
-            if [[ ! " ${AUTHORIZED_USERS[@]} " =~ " ${user} " ]] && (( $(echo "$cpu > 3.0" | bc -l) )); then
+            if [[ ! " ${AUTHORIZED_USERS[@]} " =~ " ${user} " ]]; then
                 anomaly="Utilisateur non autorisé"
                 echo "ALERTE : $anomaly (Utilisateur: $user, PID: $pid, Commande: $command)" | tee -a "$LOG_FILE"
                 collect_process_info "$pid"

@@ -158,7 +158,14 @@ monitor_processes() {
 
             anomaly="Processus zombie détecté"
             echo "ALERTE : $anomaly (PID: $pid, PPID: $ppid, Commande: $command)" | tee -a "$LOG_FILE"
-            notify_action "$pid" "$anomaly" "N/A"
+
+            # Vérifiez si le processus parent est actif
+            if ps -p "$ppid" > /dev/null; then
+                echo "Le processus parent (PPID: $ppid) est toujours actif. Essayez de le tuer." | tee -a "$LOG_FILE"
+                notify_action "$ppid" "Parent d'un zombie" "N/A"
+            else
+                echo "Le processus parent (PPID: $ppid) n'est pas actif. Le processus zombie devrait disparaître automatiquement." | tee -a "$LOG_FILE"
+            fi
         done
 
         # Pause entre les cycles de surveillance

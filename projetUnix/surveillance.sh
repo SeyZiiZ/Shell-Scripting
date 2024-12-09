@@ -81,6 +81,7 @@ monitor_processes() {
             if [[ ! " ${AUTHORIZED_USERS[@]} " =~ " ${user} " ]]; then
                 anomaly="Utilisateur non autorisé"
                 echo "ALERTE : $anomaly (Utilisateur: $user, PID: $pid, Commande: $command)" | tee -a "$LOG_FILE"
+                collect_process_info "$pid"
                 notify_action "$pid" "$anomaly" "$user"
             fi
 
@@ -88,6 +89,7 @@ monitor_processes() {
             if (( $(echo "$cpu > $CPU_THRESHOLD" | bc -l) )); then
                 anomaly="Utilisation CPU élevée ($cpu%)"
                 echo "ALERTE : $anomaly (Utilisateur: $user, PID: $pid, Commande: $command)" | tee -a "$LOG_FILE"
+                collect_process_info "$pid"
                 notify_action "$pid" "$anomaly" "$user"
             fi
         done
